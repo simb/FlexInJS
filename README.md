@@ -25,9 +25,11 @@ This code is setup as an express server project. So you must have nodejs install
 
 Another focus of my talk other than Backbone was about the Brunch.io tooling. This project is an equivelent of the simple js backbone above, but using brunch. I think the only functionality actually added is some css to show off how to use the box model to push things around on screen.
 
+To use this demo run these commands from the CLI.
 
 1. git clone git@github.com:simb/FlexInJS.git
 1. cd FlexInJS/brunch_demo
 1. npm install .
 1. brunch watch --server &
 1. open http://localhost:3333/
+
