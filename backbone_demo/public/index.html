@@ -1,0 +1,106 @@
+<html>
+<head>
+	<title>To Doer</title>
+	<link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+	<script src="http://documentcloud.github.com/backbone/backbone-min.js"></script>
+	<script>
+
+	
+				(function($){
+			window.app = {};
+
+			var Router = Backbone.Router.extend({
+				routes : {
+					"": "list",
+					"detail/:id": "detail"
+				},
+				list: function() {
+					this.setup();
+					var listView = new ListView();
+					$('#content').html( listView.render().el );
+
+				},
+				detail: function(id) {
+					$('body').html("Detail route ready for :" + id);
+				},
+				setup: function() {
+					var header = new Header();
+					var newForm = new ToDoFormView();
+					$body = $('body');
+					$body.html( header.render().el );
+					$body.append( header.make('div', {id: "content"}) )
+					$body.append( newForm.render().el )
+				}
+			});
+
+			var Header = Backbone.View.extend({
+				render: function(){
+					var el = this.make('h1', {class: 'header-title'}, "To Doer!");
+					this.$el.html(el);
+					return this;
+				}
+			});
+
+			var ListView = Backbone.View.extend({
+				tagName: 'ul',
+				initialize: function(){
+					app.todos.on('add', function(item, list){
+
+						 this.$el.append( this.make('li', {}, item.get("label")))
+					}, this);
+				},
+				render: function(){
+
+					return this;
+				}
+			});
+
+			var ToDoFormView = Backbone.View.extend({
+				tagName: 'form',
+				events: {
+					"click #new-btn": "onSubmit",
+					"submit": "onSubmit"
+				},
+				render: function(){
+					this.$el.html( this.make('input', {id: 'new-text'}) );
+					this.$el.append( this.make('a', {id: 'new-btn', href: "#"}, "New ToDo") );
+					return this;
+				},
+				onClick: function(){
+					app.todos.add({label: this.$el.find("#new-text").val()});
+				},
+				onSubmit: function(){
+					app.todos.add({label: this.$el.find("#new-text").val()});
+					this.$el.find("#new-text").val("")
+					return false;
+				}
+			});
+
+			var Todo = Backbone.Model.extend({
+				initialize: function() {
+					console.log('new todo created', this.attributes);
+				}
+			});
+
+			var Todos = Backbone.Collection.extend({
+				model: Todo
+			});
+
+			$(function(){
+
+				app.router = new Router();
+				app.todos = new Todos();
+				Backbone.history.start();
+
+			});
+
+		})(jQuery);
+
+	</script>
+</head>
+<body>
+	Hi All!
+</body>
+</html>
